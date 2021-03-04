@@ -1,25 +1,20 @@
 import sqlite3
 
-db_name = "./A3.db"
+db_name = "./database/A3.db"
 
 def main():
     db_connection = sqlite3.connect(db_name)
     db_cursor = db_connection.cursor()
 
     # TODO DO STUFF
-
+    
     db_cursor.close()
     db_connection.close()
     
 
 def papers_by_area(db_connection, db_cursor, s_area):
-    db_cursor.execute("         # TODO Comress string
-    
-        SELECT title
-        FROM papers
-        WHERE area = s_area     # TODO REPLACE s_area with string
-                                # TODO ORDER BY average review score
-    ")
+    temp = ()
+    db_cursor.execute("SELECT title FROM papers WHERE area = :s_area;", {"s_area":s_area})
 
 
 def assigned_papers(db_connection, db_cursor, user):
