@@ -13,7 +13,6 @@ def main():
     
 
 def papers_by_area(db_connection, db_cursor, s_area):
-    temp = ()
     db_cursor.execute("SELECT title FROM papers WHERE area = :s_area;", {"s_area":s_area})
 
 
