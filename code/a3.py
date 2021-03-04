@@ -22,11 +22,11 @@ def assigned_papers(db_connection, db_cursor, user):
     pass
 
 
-def check_review(db_connection, db_cursor, review)
+def check_review(db_connection, db_cursor, review):
     pass
 
 
-def create_diff_score(db_connection, db_cursor)
+def create_diff_score(db_connection, db_cursor):
     pass
 
 
