@@ -34,8 +34,6 @@ def main():
     db_connection.close()
 
 
-
-
 def papers_by_area(db_connection, db_cursor, s_area):
     db_cursor.execute("SELECT title FROM papers WHERE area = :s_area;", {"s_area":s_area})
 
@@ -59,6 +57,7 @@ def check_review(db_connection, db_cursor, accepted_deviation):
 def create_diff_score(db_connection, db_cursor):
     pass
 
+
 def interface():
     print("Please select an option by entering a number")
     print("1. Find accepted papers")
@@ -70,4 +69,3 @@ def interface():
 
 if __name__ == "__main__":
     main()
-
