@@ -83,8 +83,4 @@ def user_input():
     
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     main()
-=======
-    main()
->>>>>>> 004ac184a2184c7a2c0a7b4129bbfd4143b3fcfe
