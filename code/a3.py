@@ -76,10 +76,6 @@ def interface():
     print("4. Find papers according to difference score")
     print("5. Exit\n")
     print("Option", end=" ")
-
-def user_input():
-    userInput = input("")
-    return userInput
     
 
 if __name__ == "__main__":
