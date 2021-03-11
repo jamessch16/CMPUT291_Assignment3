@@ -16,7 +16,7 @@ def main():
     while userInput != "5":     
         interface()
         userInput = user_input()
-    # switch case statements
+        # switch case statements
 
 
     db_cursor.close()
