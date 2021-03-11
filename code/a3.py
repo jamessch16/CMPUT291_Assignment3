@@ -18,8 +18,7 @@ def main():
         user_input = int(input("\nOption"))
         
         if user_input == 1:
-            arg_input = input("Input an area: ")
-            papers_by_area(db_connection, db_cursor, arg_input)
+            papers_by_area(db_connection, db_cursor)
 
         if user_input == 2:
             arg_input = input("Input an email: ")
