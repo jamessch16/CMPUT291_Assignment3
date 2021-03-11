@@ -8,7 +8,7 @@ def main():
     db_connection = sqlite3.connect(db_name)
     db_cursor = db_connection.cursor()
 
-    # TODO DO STUFF
+    create_diff_score
 
     print("Welcome to conference management system")
     
@@ -65,7 +65,18 @@ def check_review(db_connection, db_cursor, acceptable_deviation):
 
 
 def create_diff_score(db_connection, db_cursor):
-    pass
+    db_cursor("CREATE VIEW DiffScore
+    AS SELECT pid, ptitle, difference
+    FROM papers p
+    WHERE pid = p.id
+    AND ptitle = p.title
+    AND difference = AVG(
+
+    ) - AVG(
+
+    )
+    
+    ")
 
 
 def interface():
@@ -76,6 +87,10 @@ def interface():
     print("4. Find papers according to difference score")
     print("5. Exit\n")
     print("Option", end=" ")
+
+def user_input():
+    userInput = input("")
+    return userInput
     
 
 if __name__ == "__main__":
