@@ -16,7 +16,12 @@ def main():
     while userInput != "5":     
         interface()
         userInput = user_input()
-        # switch case statements
+        # if else statements
+        if userInput == "1":
+            papers_by_area(db_connection,db_cursor)
+        if userInput == "2":
+
+
 
 
     db_cursor.close()
@@ -25,9 +30,16 @@ def main():
 
 
 
-def papers_by_area(db_connection, db_cursor, s_area):
-    db_cursor.execute("SELECT title FROM papers WHERE area = :s_area;", {"s_area":s_area})
-
+def papers_by_area(db_connection, db_cursor):
+    print("List the titles of accepted papers in a given area, that have at least one review and where area is to be provided at query time, in descending order of their average overall review scores.")
+    print("Area:", end=" ")
+    s_area = user_input()
+    db_cursor.execute("SELECT title FROM papers p, reviews r WHERE p.id = r.paper AND p.decision = 'A' AND area = :s_area GROUP BY r.paper ORDER BY AVG(r.overall) DESC;",{"s_area":s_area})
+    rows = db_cursor.fetchall()
+    print("Accepted papers in this area")
+    for x in range(len(rows)):
+        print(rows[x][0])
+    print("\n\n")
 
 def assigned_papers(db_connection, db_cursor, user):
     # Searches for all papers that user is assigned to review
@@ -48,12 +60,12 @@ def interface():
     print("3. Find papers with inconsistent reviews")
     print("4. Find papers according to difference score")
     print("5. Exit\n")
+    print("Option", end=" ")
 
 def user_input():
-    userInput = input("Option ")
+    userInput = input("")
     return userInput
     
-
 
 if __name__ == "__main__":
     main()
