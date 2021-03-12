@@ -35,16 +35,16 @@ def main():
             user_input = -1
 
         if user_input == 1:
-            papers_by_area(db_connection, db_cursor)
+            papers_by_area(db_cursor)
 
         elif user_input == 2:
-            assigned_papers(db_connection, db_cursor)
+            assigned_papers(db_cursor)
 
         elif user_input == 3:
-            check_review(db_connection, db_cursor)
+            check_review(db_cursor)
 
         elif user_input == 4:
-            outlier_papers(db_connection, db_cursor)
+            outlier_papers(db_cursor)
 
         elif user_input == 5 :
             pass
@@ -56,7 +56,7 @@ def main():
     db_connection.close()
 
 
-def papers_by_area(db_connection, db_cursor):
+def papers_by_area(db_cursor):
     # Lists every paper in a given area that has at least one review 
 
     # Get Input
@@ -96,7 +96,7 @@ def papers_by_area(db_connection, db_cursor):
         print(row[0])
     print()
 
-def assigned_papers(db_connection, db_cursor):
+def assigned_papers(db_cursor):
     # Searches for all papers that user is assigned to review
 
     print("Search for all papers assigned to a reviewer given their email")
@@ -138,7 +138,7 @@ def assigned_papers(db_connection, db_cursor):
     print()
 
 
-def check_review(db_connection, db_cursor):
+def check_review(db_cursor):
     # Searching for paper with overall scores that differ from average overall score by certain percent
     
     # Get Input
@@ -180,9 +180,12 @@ def check_review(db_connection, db_cursor):
     print("\n")
 
 
-def outlier_papers(db_connection, db_cursor):
+def outlier_papers(db_cursor):
     # For a specified interval, prints the users who have reviewed a paper
-    # with a grade whose deviation from the area average is within the interval 
+    # with a grade whose deviation from the area average is within the interval
+    #
+    # Arguments:
+    #   db_connection: 
 
     # Get input
     print("Find all papers whose average differs from the area average by a value within [X, Y]")
