@@ -12,20 +12,19 @@ def main():
 
     print("Welcome to conference management system")
     
-    userInput = 0
-    while userInput != 5:     
+    user_input = 0
+    while user_input != 5:     
         interface()
-        user_input = int(input("\nOption"))
+        user_input = int(input())
         
         if user_input == 1:
             papers_by_area(db_connection, db_cursor)
 
         if user_input == 2:
-            arg_input = input("Input an email: ")
-            assigned_papers(db_connection, db_cursor, arg_input)
+            assigned_papers(db_connection, db_cursor)
 
         if user_input == 3:
-            arg_input = int(input("Input an acceptable deviation: "))
+            arg_input = input("Input an acceptable deviation: ")
             check_review(db_connection, db_cursor, arg_input)
 
         if user_input == 4:
@@ -33,8 +32,6 @@ def main():
 
     db_cursor.close()
     db_connection.close()
-
-
 
 
 def papers_by_area(db_connection, db_cursor):
@@ -48,11 +45,16 @@ def papers_by_area(db_connection, db_cursor):
         print(rows[x][0])
     print("\n\n")
 
-def assigned_papers(db_connection, db_cursor, user):
+def assigned_papers(db_connection, db_cursor):
     # Searches for all papers that user is assigned to review
+
+    user = input("Input an email: ")
+
+    # Perform queries
     db_cursor.execute("SELECT p.title FROM papers p, reviews r, users u WHERE u.email = :user AND r.reviewer = u.email AND r.paper = p.id ORDER BY id;", {"user":user})
     result = db_cursor.fetchall()
     
+    # Print result
     if len(result) == 0:
         print("No paper has been assigned to this reviewer")
     else:
@@ -63,21 +65,47 @@ def assigned_papers(db_connection, db_cursor, user):
 def check_review(db_connection, db_cursor, acceptable_deviation):
     pass
 
+"""
+SQL Statement:
 
+DROP VIEW DiffScore;
+CREATE VIEW DiffScore (pid, ptitle, diff) AS
+ SELECT p1.id, p1.title, ABS(Q3.avg_paper - Q2.avg_area)
+  FROM papers p1, 
+  (SELECT AVG(r2.overall) AS avg_area, p2.area AS pa
+   FROM reviews r2, papers p2
+   WHERE r2.paper = p2.id
+   GROUP BY p2.area) Q2,
+  (SELECT AVG(r3.overall) AS avg_paper, r3.paper AS rp
+   FROM reviews r3
+   GROUP BY r3.paper) Q3 
+  WHERE p1.id = Q3.rp 
+  AND p1.area = Q2.pa;
+
+SELECT DISTINCT u.email,u.name
+  FROM DiffScore d, reviews r, users u
+  WHERE d.diff >= :low AND d.diff <= :high
+  AND d.paper_id =r.paper
+  AND r.reviewer = u.email; 
+"""
 def create_diff_score(db_connection, db_cursor):
-    db_cursor("CREATE VIEW DiffScore
-    AS SELECT pid, ptitle, difference
-    FROM papers p
-    WHERE pid = p.id
-    AND ptitle = p.title
-    AND difference = AVG(
+    # For a specified interval, prints the users who have reviewed a paper
+    # with a grade whose deviation from the area average is within the interval 
 
-    ) - AVG(
+    # Get input
+    low = float(input("Input X (lower bound): "))
+    high = float(input("Input Y (upper bound): "))
 
-    )
-    
-    ")
+    # Perform query
+    db_cursor.execute("DROP VIEW IF EXISTS DiffScore;")
+    db_cursor.execute("CREATE VIEW DiffScore (pid, ptitle, diff) AS SELECT p1.id, p1.title, ABS(Q3.avg_paper - Q2.avg_area) FROM papers p1, (SELECT AVG(r2.overall) AS avg_area, p2.area AS pa FROM reviews r2, papers p2 WHERE r2.paper = p2.id GROUP BY p2.area) Q2, (SELECT AVG(r3.overall) AS avg_paper, r3.paper AS rp FROM reviews r3 GROUP BY r3.paper) Q3 WHERE p1.id = Q3.rp AND p1.area = Q2.pa;")
+    db_cursor.execute("SELECT DISTINCT u.email, u.name FROM DiffScore d, reviews r, users u WHERE d.diff >= :low AND d.diff <= :high AND d.pid = r.paper AND r.reviewer = u.email;", {"low":low, "high":high})
 
+    # Print results
+    result = db_cursor.fetchall()
+    for row in result:
+        print("Email: %s | Name: %s" % (row[0], row[1]))
+    print()
 
 def interface():
     print("Please select an option by entering a number")
@@ -86,7 +114,7 @@ def interface():
     print("3. Find papers with inconsistent reviews")
     print("4. Find papers according to difference score")
     print("5. Exit\n")
-    print("Option", end=" ")
+    print("Option: ", end="")
 
 def user_input():
     userInput = input("")

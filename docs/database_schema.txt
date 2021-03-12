@@ -1,0 +1,115 @@
+Table PAPERS (Information on author papers)
+
+Attribute
+
+Description
+
+ID
+Unique paper identification number (primary key)
+
+TITLE
+Title of the paper
+
+URL
+The unique URL of the paper
+
+DECISION
+Domain: 'A' (Accepted), 'R' (Rejected), or NULL
+
+AREA
+A keyword which describes the area of the paper
+It is a foreign key referencing AREAS.NAME
+
+AUTHOR
+Email of the contact author
+It is a foreign key referencing USERS.EMAIL
+
+CSESSION
+To be presented in this conference session if accepted
+It is a foreign key referencing SESSIONS.NAME
+
+
+
+Table USERS (Information on all users of the system)
+
+Attribute
+
+Description
+
+EMAIL
+Unique identification of any user (primary key)
+
+NAME
+Name of the user
+
+PHONE
+Phone number of the user
+
+
+
+Table SESSIONS(Information on conference sessions)
+
+Attribute
+
+Description
+
+NAME
+The name of the session
+
+CHAIR
+The chair of the session
+It is a foreign key referencing USERS.EMAIL
+
+
+
+Table AREAS
+
+Attribute
+
+Description
+
+NAME
+Keyword/name of an area
+
+
+
+Table REVIEWS (Information on the review of each author paper)
+
+PAPER
+The paper being reviewed
+It is a foreign key referencing PAPERS.ID
+
+REVIEWER
+The reviewer which submitted these marks
+It is a foreign key referencing USERS.EMAIL
+
+ORIGINALITY
+The originality mark of the paper
+
+IMPORTANCE
+The importance mark of the paper
+
+SOUNDNESS
+The soundness mark of the paper
+
+OVERALL
+The overall mark of the paper
+
+JUSTIFICATION
+Reasons if the overall mark is 33% above or below the actual average of the other 3 marks
+
+
+
+Table EXPERTISE(Information on the expertise of each internal reviewer)
+
+Attribute
+
+Description
+
+AREA
+An area (keyword) in this conference
+It is a foreign key referencing AREAS.NAME
+
+REVIEWER
+Identification (email) of the reviewer
+It is a foreign key referencing USERS.EMAIL
