@@ -11,6 +11,10 @@ def main():
     create_diff_score
 
     print("Welcome to conference management system")
+
+    # Dropping view if exists and then recreating it
+    db_cursor.execute("DROP VIEW IF EXISTS DiffScore;")
+    db_cursor.execute("CREATE VIEW DiffScore (pid, ptitle, diff) AS SELECT p1.id, p1.title, ABS(Q3.avg_paper - Q2.avg_area) FROM papers p1, (SELECT AVG(r2.overall) AS avg_area, p2.area AS pa FROM reviews r2, papers p2 WHERE r2.paper = p2.id GROUP BY p2.area) Q2, (SELECT AVG(r3.overall) AS avg_paper, r3.paper AS rp FROM reviews r3 GROUP BY r3.paper) Q3 WHERE p1.id = Q3.rp AND p1.area = Q2.pa;")
     
     user_input = 0
     while user_input != 5:     
@@ -74,22 +78,6 @@ def assigned_papers(db_connection, db_cursor):
             print(row[0])
 
 
-"""
-Q7: A set of reviews is inconsistent if any of them has an overall mark different by more than 25% of the average overall mark in the set. 
-List the ID and title of every paper with inconsistent reviews. 
-
-
-SELECT p.id, p.title
-FROM  papers p, reviews r
-WHERE r.paper = p.id AND
-      0.25 < ABS( 1 - r.overall/(
-        SELECT AVG(r2.overall)
-        FROM reviews r2
-        WHERE r2.paper = p.id
-      )
-);
-"""
-
 def check_review(db_connection, db_cursor):
     # Searching for paper with overall scores that differ from average overall score by certain percent
     
@@ -109,29 +97,6 @@ def check_review(db_connection, db_cursor):
     print("\n")
 
 
-"""
-SQL Statement:
-
-DROP VIEW DiffScore;
-CREATE VIEW DiffScore (pid, ptitle, diff) AS
- SELECT p1.id, p1.title, ABS(Q3.avg_paper - Q2.avg_area)
-  FROM papers p1, 
-  (SELECT AVG(r2.overall) AS avg_area, p2.area AS pa
-   FROM reviews r2, papers p2
-   WHERE r2.paper = p2.id
-   GROUP BY p2.area) Q2,
-  (SELECT AVG(r3.overall) AS avg_paper, r3.paper AS rp
-   FROM reviews r3
-   GROUP BY r3.paper) Q3 
-  WHERE p1.id = Q3.rp 
-  AND p1.area = Q2.pa;
-
-SELECT DISTINCT u.email,u.name
-  FROM DiffScore d, reviews r, users u
-  WHERE d.diff >= :low AND d.diff <= :high
-  AND d.paper_id =r.paper
-  AND r.reviewer = u.email; 
-"""
 def create_diff_score(db_connection, db_cursor):
     # For a specified interval, prints the users who have reviewed a paper
     # with a grade whose deviation from the area average is within the interval 
@@ -141,8 +106,6 @@ def create_diff_score(db_connection, db_cursor):
     high = float(input("Input Y (upper bound): "))
 
     # Perform query
-    db_cursor.execute("DROP VIEW IF EXISTS DiffScore;")
-    db_cursor.execute("CREATE VIEW DiffScore (pid, ptitle, diff) AS SELECT p1.id, p1.title, ABS(Q3.avg_paper - Q2.avg_area) FROM papers p1, (SELECT AVG(r2.overall) AS avg_area, p2.area AS pa FROM reviews r2, papers p2 WHERE r2.paper = p2.id GROUP BY p2.area) Q2, (SELECT AVG(r3.overall) AS avg_paper, r3.paper AS rp FROM reviews r3 GROUP BY r3.paper) Q3 WHERE p1.id = Q3.rp AND p1.area = Q2.pa;")
     db_cursor.execute("SELECT DISTINCT u.email, u.name FROM DiffScore d, reviews r, users u WHERE d.diff >= :low AND d.diff <= :high AND d.pid = r.paper AND r.reviewer = u.email;", {"low":low, "high":high})
 
     # Print results
