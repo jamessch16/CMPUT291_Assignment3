@@ -20,26 +20,38 @@ def main():
         if user_input == 1:
             papers_by_area(db_connection, db_cursor)
 
-        if user_input == 2:
+        elif user_input == 2:
             assigned_papers(db_connection, db_cursor)
 
-        if user_input == 3:
-            arg_input = input("Input an acceptable deviation: ")
-            check_review(db_connection, db_cursor, arg_input)
+        elif user_input == 3:
+            check_review(db_connection, db_cursor)
 
-        if user_input == 4:
+        elif user_input == 4:
             create_diff_score(db_connection, db_cursor)
+
+        elif user_input == 5 :
+            pass
+
+        else:
+            print("Invalid Input! Try again.")
 
     db_cursor.close()
     db_connection.close()
 
 
 def papers_by_area(db_connection, db_cursor):
+    # Searches all the Paper that have atleast one review 
+
+    # Get Input
     print("List the titles of accepted papers in a given area, that have at least one review and where area is to be provided at query time, in descending order of their average overall review scores.")
     print("Area:", end=" ")
     s_area = user_input()
+
+    # Perform queries
     db_cursor.execute("SELECT title FROM papers p, reviews r WHERE p.id = r.paper AND p.decision = 'A' AND area = :s_area GROUP BY r.paper ORDER BY AVG(r.overall) DESC;",{"s_area":s_area})
     rows = db_cursor.fetchall()
+
+    # Print results
     print("Accepted papers in this area")
     for x in range(len(rows)):
         print(rows[x][0])
@@ -62,8 +74,40 @@ def assigned_papers(db_connection, db_cursor):
             print(row[0])
 
 
-def check_review(db_connection, db_cursor, acceptable_deviation):
-    pass
+"""
+Q7: A set of reviews is inconsistent if any of them has an overall mark different by more than 25% of the average overall mark in the set. 
+List the ID and title of every paper with inconsistent reviews. 
+
+
+SELECT p.id, p.title
+FROM  papers p, reviews r
+WHERE r.paper = p.id AND
+      0.25 < ABS( 1 - r.overall/(
+        SELECT AVG(r2.overall)
+        FROM reviews r2
+        WHERE r2.paper = p.id
+      )
+);
+"""
+
+def check_review(db_connection, db_cursor):
+    # Searching for paper with overall scores that differ from average overall score by certain percent
+    
+    # Get Input
+    s_percent = float(input("Enter a percent (X %) for which to find inconsistent papers  "))
+    print("Searching for paper with overall scores that differ by more than",s_percent,"from their average overall score.")
+    print("The following are inconsistent when X =",s_percent,"%")
+    s_percent = s_percent/100
+    
+    # Perform Queries
+    db_cursor.execute("SELECT DISTINCT p.id, p.title FROM papers p, reviews r WHERE r.paper = p.id AND :s_percent < ABS(1 - r.overall/( SELECT AVG(r2.overall) FROM reviews r2 WHERE r2.paper = p.id));",{"s_percent" :s_percent})
+    rows = db_cursor.fetchall()
+    
+    # Print result
+    for x in range(len(rows)):
+        print(rows[x][0], rows[x][1])
+    print("\n")
+
 
 """
 SQL Statement:
