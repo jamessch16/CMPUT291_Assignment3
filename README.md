@@ -1,6 +1,6 @@
 CMPUT 291 Assignment 3
 
-SQL code modified from CMPUT 291 Assignment 2 v3 solutions.
+SQL code was modified from CMPUT 291 Assignment 2 v3 solutions. The Python framework was written by group members.
 
 Group Members:
 James Schaefer-Pham
