@@ -1,8 +1,6 @@
 CMPUT 291 Assignment 3
 
 SQL code was modified from CMPUT 291 Assignment 2 v3 solutions. The Python framework was written by group members.
-Tasks 1 and 4 by James Schaefer-Pham
-Tasks 2 and 3 by Aniket Mishra
 
 Github repo: https://github.com/jamessch16/CMPUT291_Assignment3
 
