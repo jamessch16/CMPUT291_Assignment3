@@ -8,7 +8,6 @@ def main():
     db_connection = sqlite3.connect(db_name)
     db_cursor = db_connection.cursor()
 
-
     # Create DiffScore view
     db_cursor.execute("DROP VIEW IF EXISTS DiffScore;")
     db_cursor.execute("CREATE VIEW DiffScore (pid, ptitle, diff) "
@@ -26,14 +25,18 @@ def main():
     print("Welcome to the conference management system")
 
     user_input = 0
-    while user_input != 5:     
+    while user_input != 5:
+
+        # Print menu
         interface()
 
+        # Choose menu option
         try:
             user_input = int(input())
         except ValueError:
             user_input = -1
 
+        # Launch task
         if user_input == 1:
             papers_by_area(db_cursor)
 
@@ -52,12 +55,16 @@ def main():
         else:
             print("Invalid Input! Try again.")
 
+    # Close database connection
     db_cursor.close()
     db_connection.close()
 
 
 def papers_by_area(db_cursor):
-    # Lists every paper in a given area that has at least one review 
+    # Task 1 - Lists every paper in a given area that has at least one review
+    #
+    # Arguments:
+    #   db_cursor: A SQLite3 cursor object pointing to the database being queried
 
     # Get Input
     print("List the titles of accepted papers in a given area, that have at least one review and where area is to be provided at query time, in descending order of their average overall review scores.")
@@ -97,7 +104,10 @@ def papers_by_area(db_cursor):
     print()
 
 def assigned_papers(db_cursor):
-    # Searches for all papers that user is assigned to review
+    # Task 2 - Searches for all papers that user is assigned to review
+    #
+    # Arguments:
+    #   db_cursor: A SQLite3 cursor object pointing to the database being queried
 
     print("Search for all papers assigned to a reviewer given their email")
     user = input("Input an email: ")
@@ -139,7 +149,10 @@ def assigned_papers(db_cursor):
 
 
 def check_review(db_cursor):
-    # Searching for paper with overall scores that differ from average overall score by certain percent
+    # Task 3 - Searching for paper with overall scores that differ from average overall score by certain percent
+    #
+    # Arguments:
+    #   db_cursor: A SQLite3 cursor object pointing to the database being queried
     
     # Get Input
     valid_input = False
@@ -181,11 +194,11 @@ def check_review(db_cursor):
 
 
 def outlier_papers(db_cursor):
-    # For a specified interval, prints the users who have reviewed a paper
+    # Task 4 - For a specified interval, prints the users who have reviewed a paper
     # with a grade whose deviation from the area average is within the interval
     #
     # Arguments:
-    #   db_connection: 
+    #   db_cursor: A SQLite3 cursor object pointing to the database being queried
 
     # Get input
     print("Find all papers whose average differs from the area average by a value within [X, Y]")
